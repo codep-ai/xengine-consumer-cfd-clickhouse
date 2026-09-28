@@ -10,4 +10,4 @@ select
     source,
     'commodity'                                           as asset_class,
     now64(6)                                       as ingested_at
-from {{ source('cfd_lake', 'fct_tick_commodity') }}
+from {{ source('cfd_lake', 'tick_commodity') }}

@@ -14,10 +14,10 @@ clean-targets: ["target", "dbt_packages"]
 
 vars:
   iceberg_locations:
-    cfd_lake.fct_tick_fx:        https://datapai-cfd-lake.s3.ap-southeast-2.amazonaws.com/lake/fct_tick_fx
-    cfd_lake.fct_tick_crypto:    https://datapai-cfd-lake.s3.ap-southeast-2.amazonaws.com/lake/fct_tick_crypto
-    cfd_lake.fct_tick_index:     https://datapai-cfd-lake.s3.ap-southeast-2.amazonaws.com/lake/fct_tick_index
-    cfd_lake.fct_tick_commodity: https://datapai-cfd-lake.s3.ap-southeast-2.amazonaws.com/lake/fct_tick_commodity
+    cfd_lake.tick_fx:        https://datapai-cfd-lake.s3.ap-southeast-2.amazonaws.com/lake/fct_tick_fx
+    cfd_lake.tick_crypto:    https://datapai-cfd-lake.s3.ap-southeast-2.amazonaws.com/lake/fct_tick_crypto
+    cfd_lake.tick_index:     https://datapai-cfd-lake.s3.ap-southeast-2.amazonaws.com/lake/fct_tick_index
+    cfd_lake.tick_commodity: https://datapai-cfd-lake.s3.ap-southeast-2.amazonaws.com/lake/fct_tick_commodity
 
 on-run-start:
   - "{{ create_iceberg_source_views() }}"
