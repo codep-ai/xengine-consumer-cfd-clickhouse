@@ -1,0 +1,38 @@
+# xengine-consumer-cfd-clickhouse — the realtime team's dbt project on ClickHouse for the CFD tick estate. Reads the Kafka-Connect-written,
+# Glue-catalogued Iceberg tick tables IN PLACE (iceberg() views created on-run-start) and builds the same models the analytics team
+# builds on Snowflake (staging per asset class -> fct_tick_unified -> mart_spread_by_asset_hourly) as MergeTree serving tables,
+# plus one realtime-only quote board. ClickHouse 23.8 reads by table root (https form); a Glue-catalog database needs 25.12+.
+name: xengine_consumer_cfd_clickhouse
+version: "1.0.0"
+config-version: 2
+profile: xengine_consumer_cfd_clickhouse
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+vars:
+  iceberg_locations:
+    cfd_lake.fct_tick_fx:        https://datapai-cfd-lake.s3.ap-southeast-2.amazonaws.com/lake/fct_tick_fx
+    cfd_lake.fct_tick_crypto:    https://datapai-cfd-lake.s3.ap-southeast-2.amazonaws.com/lake/fct_tick_crypto
+    cfd_lake.fct_tick_index:     https://datapai-cfd-lake.s3.ap-southeast-2.amazonaws.com/lake/fct_tick_index
+    cfd_lake.fct_tick_commodity: https://datapai-cfd-lake.s3.ap-southeast-2.amazonaws.com/lake/fct_tick_commodity
+
+on-run-start:
+  - "{{ create_iceberg_source_views() }}"
+
+tests:
+  xengine_consumer_cfd_clickhouse:
+    +tags: ["cross_engine_mesh", "cross_engine", "role_consumer", "engine_clickhouse", "cfd"]
+
+models:
+  xengine_consumer_cfd_clickhouse:
+    +tags: ["cross_engine_mesh", "cross_engine", "role_consumer", "engine_clickhouse", "cfd"]
+    +meta: {engine: clickhouse, role: consumer}
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table
+      +engine: MergeTree()
+      +settings: {allow_nullable_key: 1}

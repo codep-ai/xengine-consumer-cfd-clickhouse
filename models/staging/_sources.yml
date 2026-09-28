@@ -1,0 +1,19 @@
+version: 2
+# The CFD tick lake: four Iceberg tables written by the Kafka Connect Iceberg sink and catalogued in Glue (database `cfd`).
+# ClickHouse reads them in place through iceberg() views (created on-run-start). `physical_identity` is the engine-independent
+# name the lineage stitcher joins on; the Snowflake consumer declares the same names. `produced_by_engine: kafka_connect` tells
+# the stitcher these tables have no dbt producer: they form the raw lane shared by both consumers.
+sources:
+  - name: cfd_lake
+    database: cfd_lake
+    schema: cfd_lake
+    meta: {engine: clickhouse, produced_by_engine: kafka_connect, physical_format: iceberg, catalog: "glue:cfd"}
+    tables:
+      - name: fct_tick_fx
+        meta: {physical_identity: "glue:cfd.fct_tick_fx"}
+      - name: fct_tick_crypto
+        meta: {physical_identity: "glue:cfd.fct_tick_crypto"}
+      - name: fct_tick_index
+        meta: {physical_identity: "glue:cfd.fct_tick_index"}
+      - name: fct_tick_commodity
+        meta: {physical_identity: "glue:cfd.fct_tick_commodity"}

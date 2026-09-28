@@ -1,0 +1,19 @@
+version: 2
+models:
+  - name: stg_ticks_fx
+    columns: [{name: symbol, tests: [not_null]}, {name: ts_utc, tests: [not_null]}]
+  - name: stg_ticks_crypto
+    columns: [{name: symbol, tests: [not_null]}, {name: ts_utc, tests: [not_null]}]
+  - name: stg_ticks_index
+    columns: [{name: symbol, tests: [not_null]}, {name: ts_utc, tests: [not_null]}]
+  - name: stg_ticks_commodity
+    columns: [{name: symbol, tests: [not_null]}, {name: ts_utc, tests: [not_null]}]
+  - name: fct_tick_unified
+    description: One fact table over the four asset classes. Built by ClickHouse on the Glue-catalogued Iceberg tick lake, read in place.
+    columns: [{name: asset_class, tests: [not_null]}, {name: symbol, tests: [not_null]}, {name: ts_utc, tests: [not_null]}, {name: bid}, {name: ask}, {name: mid}, {name: spread_pips}, {name: session}, {name: source}, {name: ingested_at}]
+  - name: mart_spread_by_asset_hourly
+    description: Average bid-ask spread per asset class, symbol and hour. Same definition as the Snowflake consumer's mart.
+    columns: [{name: asset_class, tests: [not_null]}, {name: symbol, tests: [not_null]}, {name: event_hour, tests: [not_null]}, {name: ticks}, {name: avg_spread_pips}, {name: min_spread_pips}, {name: max_spread_pips}, {name: avg_mid}]
+  - name: serve_quote_board
+    description: Latest quote per symbol with the average spread over its last hour. ClickHouse-only serving model.
+    columns: [{name: asset_class, tests: [not_null]}, {name: symbol, tests: [not_null, unique]}, {name: last_bid}, {name: last_ask}, {name: last_mid}, {name: last_spread_pips}, {name: avg_spread_1h}, {name: last_ts_utc}]
