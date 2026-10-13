@@ -7,13 +7,13 @@ sources:
   - name: cfd_lake
     database: cfd_lake
     schema: cfd_lake
-    meta: {engine: clickhouse, produced_by_engine: kafka_connect, physical_format: iceberg, catalog: "glue:cfd"}
+    config: {meta: {engine: clickhouse, produced_by_engine: kafka_connect, physical_format: iceberg, catalog: "glue:cfd"}}
     tables:
       - name: tick_fx
-        meta: {physical_identity: "glue:cfd.tick_fx"}
+        config: {meta: {physical_identity: "glue:cfd.tick_fx"}}
       - name: tick_crypto
-        meta: {physical_identity: "glue:cfd.tick_crypto"}
+        config: {meta: {physical_identity: "glue:cfd.tick_crypto"}}
       - name: tick_index
-        meta: {physical_identity: "glue:cfd.tick_index"}
+        config: {meta: {physical_identity: "glue:cfd.tick_index"}}
       - name: tick_commodity
-        meta: {physical_identity: "glue:cfd.tick_commodity"}
+        config: {meta: {physical_identity: "glue:cfd.tick_commodity"}}
